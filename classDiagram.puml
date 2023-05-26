@@ -1,0 +1,9 @@
+@startuml
+class AStar{
+ + __init__()
+ - init_tables()
+ - calculate_estimation()
+}
+
+
+@enduml
