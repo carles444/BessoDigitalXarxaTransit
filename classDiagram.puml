@@ -1,9 +1,174 @@
 @startuml
 class AStar{
- + __init__()
- - init_tables()
- - calculate_estimation()
+    + cost_table
+    + path_table
+    + graph
+    + visits
+    + estimation_strategy
+    - heap_queue
+
+    + __init__(graph, visits, estimation_strategy)
+    - init_tables()
+    - calculate_estimation(track, last_cost)
+    - expand(track)
+    - is_solution(track) : bool
+    - build_final_path(track) : list
+    - __call__() : list
 }
 
+abstract class TrackComparisonStrategy {
+    + compare(track1, track2)
+}
+
+class ShortestPathEstimation extends TrackComparisonStrategy {
+    + compare(track1, track2) : bool
+}
+
+class TrafficEstimationStrategy extends TrackComparisonStrategy {
+    + compare(track1, track2) : bool
+}
+
+enum Strategy {
+    + TRAFFIC
+    + SHORTEST_PATH
+}
+
+class Track {
+    + estimation
+    + visited
+    + path_order
+    + cost
+    + comparison_strategy
+    + estimation_path
+
+    + set_comparison_strategy(strategy)
+    + __lt__(other) : bool
+}
+
+class ConfigurationManager {
+    - __instance
+
+    + get_instance() : ConfigurationManager
+    - __init__()
+    + get_component_value(key) : any
+}
+
+class RouteManager {
+    - configuration_manager
+    - net_file_path
+    - routes_file_path
+    - tree
+
+    + add_route(path)
+    + add_route_simulation(path)
+    + clean_routes()
+    - create_new_file()
+    - prepare_routes()
+    + generate_random_trips()
+}
+
+class Route {
+    + id
+    + path
+
+    + __init__(path, id)
+}
+
+class Vehicle {
+    + id
+    + route_id
+
+    + __init__(route_id, id)
+}   
+
+class SUMOSimulator {
+    - __instance
+    - configuration_manager
+    - scene_path
+    + traci_running
+    + to_add_routes
+    + stats
+
+    - __init__()
+    + get_instance() : SUMOSimulator
+    - find_config_file(extension) : string
+    - configure_simulation(use_gui) : list
+    - init_traci(scene_path, use_gui)
+    - close_traci()
+    + simulate(scene_path, use_gui)
+    + add_route(route, vehicle)
+    - load_stats()
+    - check_routes()
+    - simulation_loop()
+    + get_waiting_time(edges) : float
+    + get_graph() : Graph
+
+
+}
+
+class Graph {
+    + vertices
+    + edges
+    + connections
+    + __init__()
+    + add_vertex(vertex) : bool
+    + remove_vertex(id) : bool
+    + add_edge(edge) : bool
+    + remove_edte(id) : bool
+    + get_distance(edge, type) : float
+    + get_distance(vertex1, vertex2, type) : float
+    + init_distance_edte_weights(distance_type)
+    + __json__() : string
+}
+
+class Vertex {
+    + id
+    + position
+    + out_edges
+    + in_edges
+    + out_edges
+    + dijkstra_dist
+    + dijkstra_visited
+    + dijkstra_edge
+
+    + __json__() : dict
+    + __lt__() : bool
+}
+
+class Edge {
+    + id
+    + weight
+    + dst_vertex
+    + origin_vertex
+
+    + __json__() : dict
+}
+
+class UniqueIdGenerator {
+    - __instance
+    + __new__(cls) : UniqueIdGenerator
+    + generate_id() : string
+}
+
+class Greedy {
+    - shortest_dijkstra_dist(vertices) : int
+    + get_greedy_track(graph, visits) : list
+}
+
+class Dijkstra {
+    + Dijkstra(graph, initVertex)
+    + get_shortest_path(graph, v_i, v_f) : list
+}
+
+Graph "1" --> "n" Edge
+Graph "1" --> "n" Vertex
+UniqueIdGenerator --> "1" UniqueIdGenerator
+AStar --> "1" Graph
+AStar --> "n" Track
+Track --> "1" Strategy
+AStar --> "1" Strategy
+Strategy --> "n" TrackComparisonStrategy
+ConfigurationManager --> "1" ConfigurationManager
+SUMOSimulator --> "1" SUMOSimulator
 
 @enduml

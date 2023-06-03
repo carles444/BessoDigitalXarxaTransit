@@ -8,7 +8,7 @@ class ConfigurationManager:
     @staticmethod
     def get_instance():
         if ConfigurationManager.__instance is None:
-            ConfigurationManager()
+            ConfigurationManager.__instance = ConfigurationManager()
         return ConfigurationManager.__instance
     
     def __init__(self, configuration_file_path : str = None) -> None:

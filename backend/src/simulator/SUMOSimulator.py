@@ -7,6 +7,7 @@ from src.simulator.obj.Vehicle import Vehicle
 import os, sys
 import traci
 import numpy as np
+from src.logging.Logger import Logger
 
 
 def init_SUMO():
@@ -35,7 +36,17 @@ class SUMOSimulator:
         self.scene_path = self.configuration_manager.get_component_value('default_simulation_path')
         self.traci_running = False
         self.to_add_routes = [] # touples list
+        self.running_vehicles = []
         self.stats = {}
+        self.vehicle_stats = {}
+        self.step = 0
+        self.logger = Logger.get_instance()
+        self.traci_vehicle_stats = [
+            traci.constants.VAR_LANE_INDEX,
+            traci.constants.VAR_SPEED,
+            traci.constants.VAR_WAITING_TIME,
+            traci.constants.VAR_DISTANCE
+        ]
 
     def find_config_file(self, extension : str = 'sumocfg') -> str:
         try:
@@ -98,20 +109,51 @@ class SUMOSimulator:
 
         edges = traci.edge.getIDList()
         self.stats['edges_waiting_time'] = {}
+        self.stats['edges_avg_speed'] = {}
         self.stats['edges_waiting_time']['total_waiting_time'] = 0
         for edge_id in edges:
             self.stats['edges_waiting_time']['total_waiting_time'] += traci.edge.getWaitingTime(edge_id)
             self.stats['edges_waiting_time'][edge_id] = traci.edge.getWaitingTime(edge_id)
+            self.stats['edges_avg_speed'][edge_id] = traci.edge.getLastStepMeanSpeed(edge_id)
 
+
+    def handle_vehicle_end(self, vehicle_id : str):
+        depart_step = self.vehicle_stats[vehicle_id]['depart_step']
+        self.logger.info(f'Vehicle with Id: {vehicle_id} in {self.step - depart_step} steps')
+
+    def load_vehicle_data(self, vehicle_id : str) -> None:
+        data = traci.vehicle.getSubscriptionResults(vehicle_id) 
+        self.vehicle_stats[vehicle_id] = data
 
     def check_routes(self) -> None:
         if not self.traci_running:
             return
+        
+        ended_vehicles = []
+        for v_id in self.running_vehicles:
+            if v_id not in traci.vehicle.getIDList() and v_id in self.vehicle_stats.keys():
+                self.handle_vehicle_end(v_id)
+                ended_vehicles.append(v_id)
+                continue
+            depart_time = traci.vehicle.getDeparture(v_id)
+            if not depart_time > 0:
+                continue
+            elif v_id not in self.vehicle_stats.keys():
+                self.vehicle_stats[v_id] = {}
+            if 'depart_step' not in self.vehicle_stats[v_id].keys():
+                self.vehicle_stats[v_id]['depart_step'] = depart_time
+            self.load_vehicle_data(v_id)
+
+        for v_id in ended_vehicles:
+            self.running_vehicles.remove(v_id)
+        
         for route_vehicle in self.to_add_routes:
             route = route_vehicle[0]
             vehicle = route_vehicle[1]
             traci.route.add(route.id, route.path)
             traci.vehicle.add(vehicle.id, vehicle.route_id)
+            traci.vehicle.subscribe(vehicle.id, self.traci_vehicle_stats)
+            self.running_vehicles.append(vehicle.id)
         self.to_add_routes = []
 
     def simulation_loop(self) -> None:
@@ -119,17 +161,19 @@ class SUMOSimulator:
         junctions = traci.junction.getIDList()
         edges = traci.edge.getIDList()
         
-        for step in range(total_steps):
+        for _ in range(total_steps):
+            # self.logger.info(f'Step: {self.step}')
             self.check_routes()
-            if step % 1 == 0:
+            if self.step % 1 == 0:
                 self.load_stats()
             vehicles = traci.vehicle.getIDList()
             stopped_vehicles = 0
             for v_id in vehicles:
                 if traci.vehicle.getSpeed(v_id) == 0:
                     stopped_vehicles += 1
-            print(f'Step: {self.stats["avg_speed"]}')
+            # print(f'Step: {self.stats["avg_speed"]}')
             traci.simulationStep()
+            self.step += 1
 
     def get_waiting_time(self, edges: list) -> float:
         stat_key = 'edges_waiting_time'
@@ -141,6 +185,22 @@ class SUMOSimulator:
                 continue
             total_time += self.stats[stat_key][edge_id]
         return total_time
+    
+    def get_avg_speed(self, edges: list) -> float:
+        stat_key = 'edges_avg_speed'
+        avg_speed = 0
+        total_edges = 0
+        total_avg_speed = 0
+        if stat_key not in self.stats.keys():
+         return avg_speed
+        for edge_id in edges:
+            if not edge_id in self.stats[stat_key].keys():
+                continue
+            total_edges += 1
+            total_avg_speed += self.stats[stat_key][edge_id]
+        
+        return total_avg_speed / total_edges
+
 
     def get_graph(self) -> Graph:
         if self.scene_path is None:

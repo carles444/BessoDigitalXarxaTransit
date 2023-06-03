@@ -7,7 +7,7 @@ import threading
 import time
 
 def add_route_thread():
-    time.sleep(25)
+    time.sleep(5)
     ds_gen = SUMOSimulator.get_instance()
     # ds_gen.simulate(use_gui=False)
     graph = ds_gen.get_graph()
@@ -21,17 +21,20 @@ def add_route_thread():
     ]
     visits = [
         graph.vertices['0'],
+        graph.vertices['5'],
         graph.vertices['19'],
     ]
     
     greedy_path = Greedy.get_greedy_track(graph, visits)
-    AStar_path = Astar.get_optimal_path(graph, visits, Astar.Strategy.SHORTEST_PATH)
+    # AStar_path = Astar.get_optimal_path(graph, visits, Astar.Strategy.SHORTEST_PATH)
     AStar_path_tr = Astar.get_optimal_path(graph, visits, Astar.Strategy.TRAFFIC)
 
     #ds_gen.add_route(path)
     rm = RouteManager()
 
-    rm.add_route_simulation(AStar_path)
+    rm.add_route_simulation(AStar_path_tr)
+    rm.add_route_simulation(greedy_path)
+
 
 def main() -> None:
     ds_gen = SUMOSimulator.get_instance()
@@ -41,7 +44,7 @@ def main() -> None:
     path = get_shortest_path(graph, graph.vertices['0'], graph.vertices['15'])
     rm = RouteManager()
     rm.clean_routes()
-    rm.generate_random_trips()
+    #rm.generate_random_trips()
     #rm.add_route(path)
     simulation_thread = threading.Thread(target=ds_gen.simulate)
     route_thread = threading.Thread(target=add_route_thread)
@@ -52,6 +55,7 @@ def main() -> None:
    
     route_thread.join()
     simulation_thread.join()
+    a = 3
 
 
 if __name__ == '__main__':
