@@ -8,7 +8,7 @@ import os, sys
 import traci
 import numpy as np
 from src.logging.Logger import Logger
-
+from src.simulator.SceneManager import SceneManager
 
 def init_SUMO():
     if 'SUMO_HOME' in os.environ:
@@ -34,6 +34,7 @@ class SUMOSimulator:
             SUMOSimulator.__instance = self
         self.configuration_manager = ConfigurationManager.get_instance()
         self.scene_path = self.configuration_manager.get_component_value('default_simulation_path')
+        self.scene_manager = SceneManager(self.scene_path)
         self.traci_running = False
         self.to_add_routes = [] # touples list
         self.running_vehicles = []
@@ -123,7 +124,7 @@ class SUMOSimulator:
 
     def load_vehicle_data(self, vehicle_id : str) -> None:
         data = traci.vehicle.getSubscriptionResults(vehicle_id) 
-        self.vehicle_stats[vehicle_id] = data
+        self.vehicle_stats[vehicle_id]['subscription_stats'] = data
 
     def check_routes(self) -> None:
         if not self.traci_running:
@@ -201,39 +202,8 @@ class SUMOSimulator:
         
         return total_avg_speed / total_edges
 
-
     def get_graph(self) -> Graph:
-        if self.scene_path is None:
-            return None
-        graph = Graph()
-        nodes_file = find_file_extension(self.scene_path, 'nod.xml')
-        edges_file = find_file_extension(self.scene_path, 'edg.xml')
-
-        try:
-            with open(nodes_file, 'r') as file:
-                nodes_tree = ET.parse(file)
-                root = nodes_tree.getroot()
-                for node in root.iter('node'):
-                    node_id = node.get('id')
-                    node_x = float(node.get('x'))
-                    node_y = float(node.get('y'))
-                    vertex = Vertex(node_id, (node_x, node_y))
-                    graph.add_vertex(vertex)
-
-            with open(edges_file, 'r') as file:
-                nodes_tree = ET.parse(file)
-                root = nodes_tree.getroot()
-                for edg in root.iter('edge'):
-                    edge_id = edg.get('id')
-                    edge_from = edg.get('from')
-                    edge_to = edg.get('to')
-                    edge = Edge(edge_id, edge_from, edge_to)
-                    graph.add_edge(edge)
-
-            graph.init_distance_edge_weights(distance_type='euclidean')
-            return graph
-        except Exception as e:
-            raise(e)
+        return self.scene_manager.get_graph(self.scene_path)
         
 
          

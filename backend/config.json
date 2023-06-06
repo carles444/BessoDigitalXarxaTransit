@@ -5,9 +5,13 @@
     "SUMO_gui_path": "C://Program Files (x86)/Eclipse/Sumo/bin/sumo-gui.exe",
     "dataset_out_path": "C:/Users/carle/Documents/Uni/TFG/BessoDigitalXarxaTransit/data/datasets/",
     "simulation_steps": 500,
+    "optimizer_simulation_steps": 100,
     "infinite": 999999999,
     "SUMO_base_path": "C:/Program Files (x86)/Eclipse/Sumo/",
     "use_gui": true,
     "log_file": "data/logs/logs.log",
-    "log_level": "INFO"
+    "log_level": "INFO",
+    "optimizer_generation_size": 10,
+    "optimizer_tmp_scenes_path": "data/simulationConfigurations/tmp/",
+    "optimizer_epochs": 10
 }

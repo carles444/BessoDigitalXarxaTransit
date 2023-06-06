@@ -5,6 +5,8 @@ import src.graph.algorithms.Greedy as Greedy
 import src.graph.algorithms.AStar as Astar
 import threading
 import time
+from src.optimizer.Optimizer import Optimizer
+from src.configuration.ConfigurationManager import ConfigurationManager
 
 def add_route_thread():
     time.sleep(5)
@@ -37,6 +39,11 @@ def add_route_thread():
 
 
 def main() -> None:
+    conf = ConfigurationManager.get_instance()
+    default_path = conf.get_component_value('default_simulation_path')
+    optimizer = Optimizer(default_path)
+    optimizer.optimize_escene()
+    exit(0)
     ds_gen = SUMOSimulator.get_instance()
     # ds_gen.simulate(use_gui=False)
     graph = ds_gen.get_graph()

@@ -1,11 +1,12 @@
 
 
 class Vertex:
-    def __init__(self, id : str, position : tuple):
+    def __init__(self, id : str, position : tuple, type='priority'):
         self.id = id
         self.position = position
         self.out_edges = []
         self.in_edges = []
+        self.type = type
 
         # Dijkstra parameters
         self.dijkstra_dist = 0

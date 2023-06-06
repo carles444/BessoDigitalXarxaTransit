@@ -2,6 +2,8 @@ from src.graph.obj.Vertex import Vertex
 from src.graph.obj.Edge import Edge
 import math
 import json
+import copy
+from src.configuration.ConfigurationManager import ConfigurationManager
 
 def euclidean_distance(point1 : tuple, point2 : tuple) -> float:
     x_distance = point2[0] - point1[0]
@@ -23,10 +25,19 @@ class Graph:
     def remove_vertex(self, id : str) -> bool:
         if not id in self.vertices.keys():
             return False
-        for in_edge, out_edge in zip(self.vertices[id].in_edges, self.vertices[id].out_edges):
-            self.edges.pop(in_edge)
-            self.edges.pop(out_edge)
         
+        for in_edge_id in self.vertices[id].in_edges:
+            in_edge = self.edges[in_edge_id]
+            from_v = self.vertices[in_edge.origin_vertex]
+            from_v.out_edges.remove(in_edge_id)
+            self.edges.pop(in_edge_id)
+        
+        for out_edge_id in self.vertices[id].out_edges:
+            out_edge = self.edges[out_edge_id]
+            to_v = self.vertices[out_edge.dst_vertex]
+            to_v.in_edges.remove(out_edge_id)
+            self.edges.pop(out_edge_id)
+
         new_connections = [conn for conn in self.connections if id not in conn]
         self.connections.clear()
         self.connections = new_connections
@@ -34,7 +45,7 @@ class Graph:
         self.vertices.pop(id)
         return True
     
-    def add_edge(self, edge : Edge) -> bool:
+    def add_edge(self, edge : Edge, allow_intersection=False) -> bool:
         if edge.id in self.edges.keys():
             return False
         
@@ -78,6 +89,9 @@ class Graph:
         
     def init_distance_edge_weights(self, distance_type = 'euclidean'):
         for edge in self.edges.values():
+            if edge.origin_vertex not in self.vertices.keys() or edge.dst_vertex in self.vertices.keys():
+                edge.weight = ConfigurationManager.get_instance().get_component_value('infinite')
+                continue
             v1 = self.vertices[edge.origin_vertex]
             v2 = self.vertices[edge.dst_vertex]
             edge.weight = self.get_distance(v1, v2, distance_type)
@@ -94,7 +108,13 @@ class Graph:
             "vertices": vertices,
             "edges": edges
         }
-
+    
+    def get_max_coords(self) -> tuple:
+        max_coords = [0, 0]
+        for vertex in self.vertices.values():
+            max_coords[0] = max(max_coords[0], vertex.position[0])
+            max_coords[1] = max(max_coords[1], vertex.position[1])
+        return max_coords
 
 
 
