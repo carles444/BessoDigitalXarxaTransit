@@ -60,6 +60,7 @@ const mountGraph = (jsonGraph, onclickNode) => {
             .attr("fill", "#69b3a2")
             .attr("cx", (d) => d.x + offsetX)
             .attr("cy", (d) => d.y + offsetY)
+            .attr("id", (d) => 'vertex_' + d.id)
             .style('cursor', 'pointer')
             .on("click", function(event, d) {
                 onclickNode(d.id, d3.select(this));

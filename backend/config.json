@@ -11,7 +11,14 @@
     "use_gui": true,
     "log_file": "data/logs/logs.log",
     "log_level": "INFO",
-    "optimizer_generation_size": 10,
+    "optimizer_generation_size": 25,
     "optimizer_tmp_scenes_path": "data/simulationConfigurations/tmp/",
-    "optimizer_epochs": 10
+    "optimizer_epochs": 3,
+    "optimizer_optimized_scene_path": "data/simulationConfigurations/optimized",
+    "optimizer_max_edges_change": 2,
+    "optimizer_max_nodes_change": 2,
+    "optimizer_max_lane_width": 4,
+    "optimizer_min_lane_width": 1,
+    "optimizer_nodes_position_sens": 40,
+    "optimizer_concurrent_threads": 8
 }

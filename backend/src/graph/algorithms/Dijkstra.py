@@ -2,9 +2,10 @@ from src.graph.obj.Graph import Graph, Vertex, Edge
 from src.configuration.ConfigurationManager import ConfigurationManager
 import heapq
 from src.simulator.SUMOSimulator import SUMOSimulator
+from src.logging.Logger import Logger
 
 INF = ConfigurationManager.get_instance().get_component_value('infinite')
-
+logger = Logger.get_instance()
 
 
 def get_aditional_cost(edge_id, stat_name, alpha=1) -> float:
@@ -51,6 +52,7 @@ def get_shortest_path(graph : Graph, v_i : Vertex, v_f : Vertex) -> list:
     shortest_path = []
     Dikstra(graph, v_i)
     d_edge = v_f.dijkstra_edge
+    print(d_edge)
 
     while d_edge is not None:
         shortest_path.append(d_edge)

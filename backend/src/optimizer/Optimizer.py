@@ -11,15 +11,16 @@ import os
 import shutil
 from src.simulator.RouteManager import RouteManager
 from src.optimizer.OptimizerSimulator import OptimizerSimulator
+import multiprocessing
 
 class Constraints:
     def __init__(self, max_edges_change : int = 3, max_nodes_change : int = 3):
-        self.max_edges_change = max_edges_change
-        self.max_nodes_change = max_nodes_change
-        self.min_edge_lanes = 1
-        self.max_edge_lanes = 3
-        self.max_lane_width = 3
-        self.nodes_position_sens = 50
+        cm = ConfigurationManager.get_instance()
+        self.max_edges_change = cm.get_component_value("optimizer_max_edges_change")
+        self.max_nodes_change = cm.get_component_value("optimizer_max_nodes_change")
+        self.min_lane_width = cm.get_component_value("optimizer_min_lane_width")
+        self.max_lane_width = cm.get_component_value("optimizer_min_lane_width")
+        self.nodes_position_sens = cm.get_component_value("optimizer_nodes_position_sens")
 
 
 class Optimizer:
@@ -36,8 +37,10 @@ class Optimizer:
         add_vertex = random.random() > 0.5
         if add_vertex:
             max_coords = graph.get_max_coords()
-            x = random.randint(0, max_coords[0])
-            y = random.randint(0, max_coords[1])
+            x = random.randint(0, max_coords[0] // self.constraints.nodes_position_sens)
+            y = random.randint(0, max_coords[1] // self.constraints.nodes_position_sens)
+            x *= self.constraints.nodes_position_sens
+            y *= self.constraints.nodes_position_sens
             id = self.id_generator.generate_id()
             graph.add_vertex(Vertex(id, (x, y)))
         else:
@@ -62,7 +65,7 @@ class Optimizer:
                 tries += 1
             if from_node_id == to_node_id or exists_connection:
                 return
-            lane_width = random.randint(1, self.constraints.max_lane_width)
+            lane_width = random.randint(self.constraints.min_lane_width, self.constraints.max_lane_width)
             graph.add_edge(Edge(self.id_generator.generate_id(), from_node_id, to_node_id, lanes=lane_width))
         else:
             edges_ids = list(graph.edges.keys())
@@ -81,51 +84,83 @@ class Optimizer:
                 self._randomize_edge(mod_graph)
         return mod_graph
 
+    def create_optimized_scene(self, graph : Graph) -> None:
+        dst_path = self.configuration_manager.get_component_value('optimizer_optimized_scene_path')
+        if os.path.exists(dst_path):
+            shutil.rmtree(dst_path)
+        os.mkdir(dst_path)
 
+        self.scene_manager.generate_nod_edg_files(graph, dst_path)
+        self.scene_manager.generate_net_file(dst_path)
+        self.scene_manager.generate_cfg_file(dst_path)
+        steps = self.configuration_manager.get_component_value('optimizer_simulation_steps')
+        RouteManager(dst_path).generate_random_trips(steps=steps)
+
+    def _execute_simulation(self, simulator : OptimizerSimulator) -> dict:
+        return simulator.simulate()
+
+    def _crete_configurations(self, args):
+        graph, configuration_number = args
+        try:
+            self.logger.info(f'Creating configuration {configuration_number}')
+            # apply random modifications
+            tmp_graph = self.apply_random_modifications(graph)
+
+            # simulation path creation
+            tmp_path = os.path.join(self.tmp_scenes_path, 'sim_' + str(configuration_number))
+            os.mkdir(tmp_path)
+
+            # generate scene configuration files
+            self.scene_manager.generate_nod_edg_files(tmp_graph, tmp_path)
+            self.scene_manager.generate_net_file(tmp_path)
+            self.scene_manager.generate_cfg_file(tmp_path)
+            
+            # generate random trips
+            steps = self.configuration_manager.get_component_value('optimizer_simulation_steps')
+            RouteManager(tmp_path).generate_random_trips(steps=steps, period='1.2')
+
+            return tmp_path
+        except:
+            return
+            
     def optimize_escene(self):
         generation_size = self.configuration_manager.get_component_value('optimizer_generation_size')
         max_epochs = self.configuration_manager.get_component_value('optimizer_epochs')
+        n_threads = self.configuration_manager.get_component_value('optimizer_concurrent_threads')
         graph = self.scene_manager.get_graph()
         
         epoch = 0
-        while epoch <= max_epochs:
+        while epoch < max_epochs:
             self.logger.info(f'===== EPOCH {epoch} =====')
             # tmp path creation
             if os.path.exists(self.tmp_scenes_path):
                 shutil.rmtree(self.tmp_scenes_path)
 
             os.mkdir(self.tmp_scenes_path)
-            simulation_folders = []
 
-            for i in range(generation_size):
-                self.logger.info(f'Creating configuration {i}')
-                # apply random modifications
-                tmp_graph = self.apply_random_modifications(graph)
+            graph_arguments = [graph for _ in range(generation_size)]
+            pool = multiprocessing.Pool(processes=n_threads)
+            simulation_folders = pool.map(self._crete_configurations, zip(graph_arguments, range(generation_size)))
+            pool.close()
+            pool.join()
 
-                # simulation path creation
-                tmp_path = os.path.join(self.tmp_scenes_path, 'sim_' + str(i))
-                simulation_folders.append(tmp_path)
-                os.mkdir(tmp_path)
+            simulators = [OptimizerSimulator(sim_path) for sim_path in simulation_folders]
 
-                # generate scene configuration files
-                self.scene_manager.generate_nod_edg_files(tmp_graph, tmp_path)
-                self.scene_manager.generate_net_file(tmp_path)
-                self.scene_manager.generate_cfg_file(tmp_path)
-                
-                # generate random trips
-                steps = self.configuration_manager.get_component_value('optimizer_simulation_steps')
-                RouteManager(tmp_path).generate_random_trips(steps=steps)
-            
-            simulators = []
-            for simulation_path in simulation_folders:
-                simulation = OptimizerSimulator(simulation_path)
-                simulation.simulate()
-                simulators.append(simulation)
-            
-            for simulator in simulators:
-                print(simulator.stats['total_waiting_time'])
+            pool = multiprocessing.Pool(processes=n_threads)
+            results = pool.map(self._execute_simulation, simulators)
+            pool.close()
+            pool.join()
 
+            try:    
+                best_simulation = min(results, key=lambda x : x['total_waiting_time'])
+                graph = best_simulation.get_graph()
+            except:
+                pass
             epoch += 1
+
+        self.create_optimized_scene(graph)
+        shutil.rmtree(self.tmp_scenes_path)
+
         
 
 

@@ -23,7 +23,7 @@ function Graph() {
             return
         }
         setLoading(true);
-        let data = await fetch('http://localhost:8000/getDijkstraPath?starting_v=' + startNode.id + '&ending_v=' + endNode.id, {
+        let data = await fetch('http://localhost:8000/getDijkstraPath?starting_v=' + startNode + '&ending_v=' + endNode, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -31,6 +31,7 @@ function Graph() {
                 'Access-Control-Allow-Origin': 'http://localhost:5173'
             }
         });
+        console.log(startNode.id, endNode.id)
         console.log(data)
         let json = await data.json();
         console.log(json)
@@ -54,16 +55,18 @@ function Graph() {
     const clickNode = (id, node) => {
         if (selectingStartNode.current) {
             if (startNode != undefined) {
-                startNode.attr('fill', defaultNodeColor)
+                vertex = document.getElementById('vertex_' + startNode)
+                vertex.attr('fill', defaultNodeColor)
             }
-            setStartNode(node);
+            setStartNode(id);
             node.attr('fill', startNodeColor)
             selectingStartNode.current = false;
         }else if (selectingEndNode.current) {
             if (endNode != undefined) {
-                endNode.attr('fill', defaultNodeColor)
+                vertex = document.getElementById('vertex_' + endNode)
+                vertex.attr('fill', defaultNodeColor)
             }
-            setEndNode(node);
+            setEndNode(id);
             node.attr('fill', endNodeColor)
             selectingEndNode.current = false;
         }

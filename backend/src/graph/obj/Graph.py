@@ -49,6 +49,9 @@ class Graph:
         if edge.id in self.edges.keys():
             return False
         
+        if [edge.origin_vertex, edge.dst_vertex] in self.connections:
+            return False
+        
         vertices = self.vertices.keys()
         if edge.dst_vertex not in vertices or edge.origin_vertex not in vertices:
             return False
@@ -62,12 +65,13 @@ class Graph:
         if not id in self.edges.keys():
             return False
         edge = self.edges[id]
-        self.vertices[edge.origin_vertex].out_edges.remove(id)
-        self.vertices[edge.dst_vertex].in_edges.remove(id)
-
+        if id in self.vertices[edge.origin_vertex].out_edges:
+            self.vertices[edge.origin_vertex].out_edges.remove(id)
+        if id in self.vertices[edge.dst_vertex].in_edges:
+            self.vertices[edge.dst_vertex].in_edges.remove(id)
 
         new_connections = [conn for conn in self.connections 
-                           if conn[0] != edge.origin_vertex or conn[1] != edge.dst_vertex]
+                           if not (conn[0] == edge.origin_vertex and conn[1] == edge.dst_vertex)]
         self.connections.clear()
         self.connections = new_connections
 

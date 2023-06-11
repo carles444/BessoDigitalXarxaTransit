@@ -63,29 +63,33 @@ class OptimizerSimulator:
         if self.traci_running:
             traci.close()
 
-    def simulate(self, scene_path : str="") -> None:
+    def simulate(self, scene_path : str="") -> dict:
         if not self.traci_running:
             self.init_traci(scene_path)
         self.simulation_loop()
         self.close_traci()
+        return self.stats
 
     def load_stats(self) -> None:
         if not self.traci_running:
             return
        
         edges = traci.edge.getIDList()
-        self.stats['total_waiting_time'] = 0
+        if 'total_waiting_time' not in self.stats.keys():
+            self.stats['total_waiting_time'] = 0
         for edge_id in edges:
             self.stats['total_waiting_time'] += traci.edge.getWaitingTime(edge_id)
 
     def simulation_loop(self) -> None:
         total_steps = self.configuration_manager.get_component_value('optimizer_simulation_steps')        
         self.logger.info(f'Simulating scene: {os.path.basename(self.scene_path)}...')
-        for _ in tqdm(range(total_steps)):
+        for _ in range(total_steps):
             self.load_stats()
             traci.simulationStep()
             self.step += 1
 
+    def get_graph(self) -> Graph:
+        return self.scene_manager.get_graph(self.scene_path)
         
 
          

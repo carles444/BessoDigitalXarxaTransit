@@ -121,7 +121,7 @@ class SceneManager:
                     'id': edge.id,
                     'from': edge.origin_vertex,
                     'to': edge.dst_vertex,
-                    'num_lanes': str(edge.lanes),
+                    'numLanes': str(edge.lanes),
                     'speed': str(edge.speed)
                 })
 

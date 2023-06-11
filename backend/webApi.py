@@ -22,7 +22,14 @@ simulation_thread = None
 @app.get('/getDijkstraPath')
 def get_dijkstra_path(starting_v: str, ending_v: str):
     graph = SUMOSimulator.get_instance().get_graph()
-    path = Dijkstra.get_shortest_path(graph, starting_v, ending_v)
+    if starting_v not in graph.vertices.keys():
+        return []
+    v_i = graph.vertices[starting_v]
+    if ending_v not in graph.vertices.keys():
+        return []
+    v_f = graph.vertices[ending_v]
+    path = Dijkstra.get_shortest_path(graph, v_i, v_f)
+    print(path)
     return path
 
 @app.get('/startSimulation')
