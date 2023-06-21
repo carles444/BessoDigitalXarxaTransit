@@ -1,0 +1,1 @@
+<configuration><input><net-file value="sim_0.net.xml" /><route-files value="sim_0.rou.xml" /></input><time><begin value="0" /></time></configuration>

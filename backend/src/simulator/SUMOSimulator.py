@@ -84,6 +84,7 @@ class SUMOSimulator:
     def close_traci(self):
         if self.traci_running:
             traci.close()
+            self.traci_running ^= self.traci_running
 
     def simulate(self, scene_path : str="", use_gui : bool = None) -> None:
         use_gui = self.configuration_manager.get_component_value('use_gui')

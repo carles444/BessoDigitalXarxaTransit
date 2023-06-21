@@ -97,5 +97,4 @@
    <edge id="55" from="16" to="19" numLanes="2" speed="13.9" />
    <edge id="56" from="19" to="16" numLanes="2" speed="13.9" />
 
-   <edge id="test" from="7" to="13" numLanes="2" speed="3" />
 </edges>

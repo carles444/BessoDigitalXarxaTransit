@@ -1,0 +1,33 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+#graphSvg {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  background-color: #f0f0f0;
+  margin-bottom: 20px;
+}
+
+#loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-container button {
+  margin: 0 10px;
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BessoDigital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="css/index.css" rel="stylesheet"/>
+  </head>
+  <body>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+      }
+
+      #graphSvg {
+        width: auto;
+        height: auto;
+        margin-bottom: 20px;
+      }
+
+      #loadingSpinner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .btn-container {
+        display: flex;
+        justify-content: center;
+      }
+
+      .btn-container button {
+        margin: 0 10px;
+      }
+
+    </style>
+    <div id="root"></div>
+    <script type="module" src="ux/js/jquery.js"></script>
+    <script type="module" src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script type="module" src="ux/js/d3GraphUtils.js"></script>
+    <script type="module" src="ux/js/uxBessoDigital.js"></script>
+
+    <div id="loadingSpinner" class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <svg id="graphSvg" class='container' width="1000" height="2000"></svg>
+    <button id="startSimulation" class="btn btn-info">Start Simulating</button>
+    <button id="endSimulation" class="btn btn-info">Start Simulating</button>
+
+    <button id="selectStart" class="btn btn-success">Start Node</button>
+    <button id="selectEnd" class="btn btn-danger">End Node</button>
+    <button id="selectVisits" class="btn btn-warning">Visit Nodes</button>
+    <button id="findGreedyRoute" class="btn btn-primary">Greedy Route</button>
+    <button id="findAStarRouteShortest" class="btn btn-primary">A* Shortest Path</button>
+    <button id="findAStarRouteWaitingTime" class="btn btn-primary">A* Lowest Waiting Time</button>
+    <button id="findAStarRouteAvgSpeed" class="btn btn-primary">A* Lowest Waiting Time</button>
+
+  </body>
+</html>

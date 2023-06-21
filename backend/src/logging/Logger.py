@@ -19,7 +19,8 @@ class Logger:
         if not filename in os.listdir(folder):
             return
         with open(self.log_file, 'w') as file:
-            file.truncate()
+            pass
+            #file.truncate()
         
 
     def __init__(self):

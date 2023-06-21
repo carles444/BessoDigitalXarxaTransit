@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2023-06-15 17:10:25.114471 by randomTrips.py v1_16_0+0000-94ec4c6cd72
+<configuration>
+    <end value="100"/>
+    <fringe-factor value="10"/>
+    <net-file value="data/simulationConfigurations/tmp/sim_12\sim_12.net.xml"/>
+    <period value="1.2"/>
+    <output-trip-file value="data/simulationConfigurations/tmp/sim_12\sim_12.rou.xml"/>
+    <prefix value="random_trip_"/>
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <trip id="random_trip_0" depart="0.00" from="35" to="11"/>
+    <trip id="random_trip_1" depart="1.20" from="15" to="18"/>
+    <trip id="random_trip_2" depart="2.40" from="45" to="34"/>
+    <trip id="random_trip_3" depart="3.60" from="9" to="16"/>
+    <trip id="random_trip_4" depart="4.80" from="17" to="11"/>
+    <trip id="random_trip_5" depart="6.00" from="15" to="25"/>
+    <trip id="random_trip_6" depart="7.20" from="1" to="18"/>
+    <trip id="random_trip_7" depart="8.40" from="36" to="28"/>
+    <trip id="random_trip_8" depart="9.60" from="15" to="30"/>
+    <trip id="random_trip_9" depart="10.80" from="50" to="10"/>
+    <trip id="random_trip_10" depart="12.00" from="50" to="36"/>
+    <trip id="random_trip_11" depart="13.20" from="17" to="18"/>
+    <trip id="random_trip_12" depart="14.40" from="9" to="2"/>
+    <trip id="random_trip_13" depart="15.60" from="1" to="18"/>
+    <trip id="random_trip_14" depart="16.80" from="54" to="31"/>
+    <trip id="random_trip_15" depart="18.00" from="50" to="38"/>
+    <trip id="random_trip_16" depart="19.20" from="28" to="6"/>
+    <trip id="random_trip_17" depart="20.40" from="17" to="28"/>
+    <trip id="random_trip_18" depart="21.60" from="52" to="3188b65c-cb85-444b-948e-57334942711e_1"/>
+    <trip id="random_trip_19" depart="22.80" from="6" to="3"/>
+    <trip id="random_trip_20" depart="24.00" from="42" to="12"/>
+    <trip id="random_trip_21" depart="25.20" from="15" to="2"/>
+    <trip id="random_trip_22" depart="26.40" from="1" to="18"/>
+    <trip id="random_trip_23" depart="27.60" from="1" to="2"/>
+    <trip id="random_trip_24" depart="28.80" from="35" to="2"/>
+    <trip id="random_trip_25" depart="30.00" from="17" to="18"/>
+    <trip id="random_trip_26" depart="31.20" from="15" to="52"/>
+    <trip id="random_trip_27" depart="32.40" from="36" to="31"/>
+    <trip id="random_trip_28" depart="33.60" from="14" to="38"/>
+    <trip id="random_trip_29" depart="34.80" from="13" to="2"/>
+    <trip id="random_trip_30" depart="36.00" from="9" to="32"/>
+    <trip id="random_trip_31" depart="37.20" from="3" to="35"/>
+    <trip id="random_trip_32" depart="38.40" from="53" to="43"/>
+    <trip id="random_trip_33" depart="39.60" from="15" to="12"/>
+    <trip id="random_trip_34" depart="40.80" from="17" to="2"/>
+    <trip id="random_trip_35" depart="42.00" from="15" to="53"/>
+    <trip id="random_trip_36" depart="43.20" from="8" to="2"/>
+    <trip id="random_trip_37" depart="44.40" from="36" to="2"/>
+    <trip id="random_trip_38" depart="45.60" from="9" to="22"/>
+    <trip id="random_trip_39" depart="46.80" from="15" to="19"/>
+    <trip id="random_trip_40" depart="48.00" from="3" to="2"/>
+    <trip id="random_trip_41" depart="49.20" from="31" to="50"/>
+    <trip id="random_trip_42" depart="50.40" from="17" to="18"/>
+    <trip id="random_trip_43" depart="51.60" from="9" to="26"/>
+    <trip id="random_trip_44" depart="52.80" from="1" to="13"/>
+    <trip id="random_trip_45" depart="54.00" from="1" to="3188b65c-cb85-444b-948e-57334942711e_1"/>
+    <trip id="random_trip_46" depart="55.20" from="5" to="20"/>
+    <trip id="random_trip_47" depart="56.40" from="1" to="2"/>
+    <trip id="random_trip_48" depart="57.60" from="9" to="27"/>
+    <trip id="random_trip_49" depart="58.80" from="9" to="48"/>
+    <trip id="random_trip_50" depart="60.00" from="1" to="37"/>
+    <trip id="random_trip_51" depart="61.20" from="38" to="27"/>
+    <trip id="random_trip_52" depart="62.40" from="15" to="32"/>
+    <trip id="random_trip_53" depart="63.60" from="1" to="21"/>
+    <trip id="random_trip_54" depart="64.80" from="21" to="53"/>
+    <trip id="random_trip_55" depart="66.00" from="8" to="2"/>
+    <trip id="random_trip_56" depart="67.20" from="25" to="18"/>
+    <trip id="random_trip_57" depart="68.40" from="9" to="49"/>
+    <trip id="random_trip_58" depart="69.60" from="16" to="32"/>
+    <trip id="random_trip_59" depart="70.80" from="32" to="18"/>
+    <trip id="random_trip_60" depart="72.00" from="47" to="28"/>
+    <trip id="random_trip_61" depart="73.20" from="49" to="27"/>
+    <trip id="random_trip_62" depart="74.40" from="1" to="2"/>
+    <trip id="random_trip_63" depart="75.60" from="1" to="52"/>
+    <trip id="random_trip_64" depart="76.80" from="8" to="47"/>
+    <trip id="random_trip_65" depart="78.00" from="17" to="13"/>
+    <trip id="random_trip_66" depart="79.20" from="8" to="53"/>
+    <trip id="random_trip_67" depart="80.40" from="1" to="24"/>
+    <trip id="random_trip_68" depart="81.60" from="1" to="42"/>
+    <trip id="random_trip_69" depart="82.80" from="48" to="18"/>
+    <trip id="random_trip_70" depart="84.00" from="23" to="28"/>
+    <trip id="random_trip_71" depart="85.20" from="15" to="49"/>
+    <trip id="random_trip_72" depart="86.40" from="17" to="18"/>
+    <trip id="random_trip_73" depart="87.60" from="28" to="38"/>
+    <trip id="random_trip_74" depart="88.80" from="15" to="2"/>
+    <trip id="random_trip_75" depart="90.00" from="9" to="33"/>
+    <trip id="random_trip_76" depart="91.20" from="20" to="26"/>
+    <trip id="random_trip_77" depart="92.40" from="10" to="18"/>
+    <trip id="random_trip_78" depart="93.60" from="17" to="30"/>
+    <trip id="random_trip_79" depart="94.80" from="15" to="18"/>
+    <trip id="random_trip_80" depart="96.00" from="1" to="32"/>
+    <trip id="random_trip_81" depart="97.20" from="15" to="50"/>
+    <trip id="random_trip_82" depart="98.40" from="6" to="14"/>
+    <trip id="random_trip_83" depart="99.60" from="15" to="34"/>
+</routes>

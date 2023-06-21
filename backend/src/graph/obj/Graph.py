@@ -69,6 +69,7 @@ class Graph:
             self.vertices[edge.origin_vertex].out_edges.remove(id)
         if id in self.vertices[edge.dst_vertex].in_edges:
             self.vertices[edge.dst_vertex].in_edges.remove(id)
+        self.edges.pop(id)
 
         new_connections = [conn for conn in self.connections 
                            if not (conn[0] == edge.origin_vertex and conn[1] == edge.dst_vertex)]
@@ -93,7 +94,7 @@ class Graph:
         
     def init_distance_edge_weights(self, distance_type = 'euclidean'):
         for edge in self.edges.values():
-            if edge.origin_vertex not in self.vertices.keys() or edge.dst_vertex in self.vertices.keys():
+            if edge.origin_vertex not in self.vertices.keys() or not edge.dst_vertex in self.vertices.keys():
                 edge.weight = ConfigurationManager.get_instance().get_component_value('infinite')
                 continue
             v1 = self.vertices[edge.origin_vertex]

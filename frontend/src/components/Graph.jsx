@@ -14,8 +14,8 @@ function Graph() {
     const startNodeColor = '#55DDE0'
     const endNodeColor = 'red'
 
-    const [startNode, setStartNode] = useState(undefined)
-    const [endNode, setEndNode] = useState(undefined)
+    const startNode = useRef(undefined)
+    const endNode = useRef(undefined)
 
     const getDijkstraPath = async () => {
         console.log(startNode, endNode)
@@ -54,21 +54,19 @@ function Graph() {
 
     const clickNode = (id, node) => {
         if (selectingStartNode.current) {
-            if (startNode != undefined) {
-                vertex = document.getElementById('vertex_' + startNode)
-                vertex.attr('fill', defaultNodeColor)
+            if (startNode.current != undefined) {
+                let vertex = d3.select('vertex_' + startNode.current)
+                vertex.style('fill', defaultNodeColor)
             }
-            setStartNode(id);
+            startNode.current = id;
             node.attr('fill', startNodeColor)
-            selectingStartNode.current = false;
         }else if (selectingEndNode.current) {
-            if (endNode != undefined) {
-                vertex = document.getElementById('vertex_' + endNode)
-                vertex.attr('fill', defaultNodeColor)
+            if (endNode.current != undefined) {
+                let vertex = d3.select(endNode.current)
+                vertex.style.fill = defaultNodeColor
             }
-            setEndNode(id);
+            endNode.current = id;
             node.attr('fill', endNodeColor)
-            selectingEndNode.current = false;
         }
     }
     const getGraph = async () => {

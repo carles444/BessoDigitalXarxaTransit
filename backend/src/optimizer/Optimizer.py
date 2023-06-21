@@ -12,6 +12,7 @@ import shutil
 from src.simulator.RouteManager import RouteManager
 from src.optimizer.OptimizerSimulator import OptimizerSimulator
 import multiprocessing
+import time
 
 class Constraints:
     def __init__(self, max_edges_change : int = 3, max_nodes_change : int = 3):
@@ -19,7 +20,7 @@ class Constraints:
         self.max_edges_change = cm.get_component_value("optimizer_max_edges_change")
         self.max_nodes_change = cm.get_component_value("optimizer_max_nodes_change")
         self.min_lane_width = cm.get_component_value("optimizer_min_lane_width")
-        self.max_lane_width = cm.get_component_value("optimizer_min_lane_width")
+        self.max_lane_width = cm.get_component_value("optimizer_max_lane_width")
         self.nodes_position_sens = cm.get_component_value("optimizer_nodes_position_sens")
 
 
@@ -76,12 +77,12 @@ class Optimizer:
     def apply_random_modifications(self, graph : Graph) -> Graph:
         mod_graph = copy.deepcopy(graph)
         n_changes = random.randint(1, self.constraints.max_nodes_change)
-        for i in range(n_changes):
-            modify_vertex = random.random() < 0.50
-            if modify_vertex:
-                self._randomize_vertex(mod_graph)
-            else:
-                self._randomize_edge(mod_graph)
+        for _ in range(n_changes):
+            self._randomize_vertex(mod_graph)
+
+        n_changes = random.randint(1, self.constraints.max_edges_change)
+        for _ in range(n_changes):
+            self._randomize_edge(mod_graph)
         return mod_graph
 
     def create_optimized_scene(self, graph : Graph) -> None:
@@ -131,6 +132,7 @@ class Optimizer:
         
         epoch = 0
         while epoch < max_epochs:
+            t_i = time.time()
             self.logger.info(f'===== EPOCH {epoch} =====')
             # tmp path creation
             if os.path.exists(self.tmp_scenes_path):
@@ -146,17 +148,17 @@ class Optimizer:
 
             simulators = [OptimizerSimulator(sim_path) for sim_path in simulation_folders]
 
-            pool = multiprocessing.Pool(processes=n_threads)
-            results = pool.map(self._execute_simulation, simulators)
-            pool.close()
-            pool.join()
-
-            try:    
+            try:  
+                pool = multiprocessing.Pool(processes=n_threads)
+                results = pool.map(self._execute_simulation, simulators)
+                pool.close()
+                pool.join()  
                 best_simulation = min(results, key=lambda x : x['total_waiting_time'])
-                graph = best_simulation.get_graph()
+                graph = simulators[results.index(best_simulation)].get_graph()
             except:
                 pass
             epoch += 1
+            self.logger.info(f'EPCOH elapsed time: {time.time() - t_i}s')
 
         self.create_optimized_scene(graph)
         shutil.rmtree(self.tmp_scenes_path)
