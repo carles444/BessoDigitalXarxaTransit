@@ -1,0 +1,12 @@
+{
+  "co2_emission": 31276111.70566473,
+  "nox_emission": 13288.465592215754,
+  "pmx_emission": 631.681574032525,
+  "fuel_comsumption": 100986.44737834013,
+  "total_waiting_time": 15237.0,
+  "total_speed": 1173.0778503856832,
+  "avg_speed": 7.870155551414689,
+  "avg_route_end_time": 65.88524590163935,
+  "total_routes_time": 4019,
+  "ended_routes": 61
+}

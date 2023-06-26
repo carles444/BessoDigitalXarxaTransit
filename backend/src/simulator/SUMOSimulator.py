@@ -9,6 +9,8 @@ import traci
 import numpy as np
 from src.logging.Logger import Logger
 from src.simulator.SceneManager import SceneManager
+import json
+
 
 def init_SUMO():
     if 'SUMO_HOME' in os.environ:
@@ -111,12 +113,15 @@ class SUMOSimulator:
 
         edges = traci.edge.getIDList()
         self.stats['edges_waiting_time'] = {}
+        self.stats['edges_fuel_consumption'] = {}
         self.stats['edges_avg_speed'] = {}
         self.stats['edges_waiting_time']['total_waiting_time'] = 0
         for edge_id in edges:
             self.stats['edges_waiting_time']['total_waiting_time'] += traci.edge.getWaitingTime(edge_id)
             self.stats['edges_waiting_time'][edge_id] = traci.edge.getWaitingTime(edge_id)
             self.stats['edges_avg_speed'][edge_id] = traci.edge.getLastStepMeanSpeed(edge_id)
+            self.stats['edges_fuel_consumption'][edge_id] = traci.edge.getFuelConsumption(edge_id)
+
 
 
     def handle_vehicle_end(self, vehicle_id : str):
@@ -176,6 +181,8 @@ class SUMOSimulator:
             # print(f'Step: {self.stats["avg_speed"]}')
             traci.simulationStep()
             self.step += 1
+        stats_file = self.configuration_manager.get_component_value('stats_file_path')  
+        self.save_stats_to_file(os.path.join(self.scene_path, stats_file))   
 
     def get_waiting_time(self, edges: list) -> float:
         stat_key = 'edges_waiting_time'
@@ -202,6 +209,23 @@ class SUMOSimulator:
             total_avg_speed += self.stats[stat_key][edge_id]
         
         return total_avg_speed / total_edges
+    
+    def get_fuel_consumption(self, edges: list, stat_key) -> float:
+        avg_fuel_cons = 0
+        total_edges = 0
+        total_avg_fuel_cons = 0
+        if stat_key not in self.stats.keys():
+            return avg_fuel_cons
+        for edge_id in edges:
+            if not edge_id in self.stats[stat_key].keys():
+                continue
+            total_edges += 1
+            total_avg_fuel_cons += self.stats[stat_key][edge_id]
+        return total_avg_fuel_cons / total_edges
+    
+    def save_stats_to_file(self, filepath: str) -> None:
+        with open(filepath, 'w') as file:
+            json.dump(self.stats, file, indent=2)
 
     def get_graph(self) -> Graph:
         return self.scene_manager.get_graph(self.scene_path)

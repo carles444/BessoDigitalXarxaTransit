@@ -23,6 +23,34 @@
    <edge id="13" from="7" to="8" numLanes="2" speed="13.9" />
    <edge id="14" from="5" to="3" numLanes="2" speed="13.9" />
 
+   
+
+
+
+
+   <edge id="15" from="9" to="0" numLanes="2" speed="13.9" />
+   <edge id="16" from="1" to="9" numLanes="2" speed="13.9" />
+
+   <edge id="17" from="6" to="1" numLanes="2" speed="13.9" />
+   <edge id="18" from="2" to="6" numLanes="2" speed="13.9" />
+
+   <edge id="19" from="7" to="2" numLanes="2" speed="13.9" />
+   <edge id="20" from="3" to="7" numLanes="2" speed="13.9" />
+
+   <edge id="21" from="8" to="3" numLanes="2" speed="13.9" />
+   <edge id="22" from="4" to="8" numLanes="2" speed="13.9" />
+
+
+
+   <edge id="23" from="5" to="0" numLanes="2" speed="13.9" />
+   <edge id="24" from="1" to="0" numLanes="2" speed="13.9" />
+
+   <edge id="25" from="2" to="1" numLanes="2" speed="13.9" />
+   <edge id="26" from="3" to="2" numLanes="2" speed="13.9" />
+
+   <edge id="27" from="8" to="7" numLanes="2" speed="13.9" />
+   <edge id="28" from="3" to="5" numLanes="2" speed="13.9" />
+
   
 
 </edges>

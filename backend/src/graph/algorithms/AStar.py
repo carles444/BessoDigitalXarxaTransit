@@ -35,7 +35,7 @@ class TrafficEstimationStrategy(TrackComparisonStrategy):
         use_gui = ConfigurationManager.get_instance().get_component_value("use_gui")
         simulator.init_traci(use_gui=use_gui)
 
-        alpha = 5
+        alpha = 2
         w_time1 = simulator.get_waiting_time(track1.estimation_path) * alpha
         w_time2 = simulator.get_waiting_time(track2.estimation_path) * alpha
 
@@ -52,9 +52,26 @@ class AvgSpeedStrategy(TrackComparisonStrategy):
         use_gui = ConfigurationManager.get_instance().get_component_value("use_gui")
         simulator.init_traci(use_gui=use_gui)
 
-        alpha = 5
+        alpha = 3
         avg_speed1 = simulator.get_avg_speed(track1.estimation_path) * alpha
         avg_speed2 = simulator.get_avg_speed(track2.estimation_path) * alpha
+
+        estimation1 = track1.cost + track1.estimation - avg_speed1
+        estimation2 = track2.cost + track2.estimation - avg_speed2
+        return estimation1 < estimation2
+    
+class FuelConsumptionStrategy(TrackComparisonStrategy):
+    def __init__(self) -> None:
+        self.simulation_stat = 'edges_fuel_consumption'
+    
+    def compare(self, track1, track2):
+        simulator = SUMOSimulator.get_instance()
+        use_gui = ConfigurationManager.get_instance().get_component_value("use_gui")
+        simulator.init_traci(use_gui=use_gui)
+
+        alpha = 3
+        avg_speed1 = simulator.get_fuel_consumption(track1.estimation_path, self.simulation_stat) * alpha
+        avg_speed2 = simulator.get_fuel_consumption(track2.estimation_path, self.simulation_stat) * alpha
 
         estimation1 = track1.cost + track1.estimation + avg_speed1
         estimation2 = track2.cost + track2.estimation + avg_speed2
@@ -64,6 +81,7 @@ class AvgSpeedStrategy(TrackComparisonStrategy):
 class Strategy(Enum):
     TRAFFIC = TrafficEstimationStrategy()
     SHORTEST_PATH = ShortestPathEstimation()
+    FUEL_CONSUMPTION = FuelConsumptionStrategy()
 
 class Track:
     def __init__(self, visited: list, path_order: list, estimation: float = INF, cost: float = 0) -> None:

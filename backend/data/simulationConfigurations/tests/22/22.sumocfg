@@ -1,0 +1,1 @@
+<configuration><input><net-file value="22.net.xml" /><route-files value="22.rou.xml" /></input><time><begin value="0" /></time></configuration>

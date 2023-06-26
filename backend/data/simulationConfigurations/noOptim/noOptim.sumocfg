@@ -1,0 +1,9 @@
+<configuration>
+    <input>
+        <net-file value="noOptim.net.xml"/>
+        <route-files value="noOptim.rou.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+    </time>
+</configuration>

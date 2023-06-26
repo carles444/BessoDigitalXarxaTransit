@@ -58,7 +58,7 @@ const mountGraph = (jsonGraph, onclickNode) => {
             .enter()
             .append("circle")
             .attr("r", 20)
-            .attr("fill", "#69b3a2")
+            .attr("fill", "#1B9C85")
             .attr("cx", (d) => d.x + offsetX)
             .attr("cy", (d) => d.y + offsetY)
             .attr("id", (d) => 'vertex_' + d.id)

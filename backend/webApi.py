@@ -85,7 +85,7 @@ def astar_waiting_time(starting_v: str, ending_v: str, visits: str):
         return []
     graph = SUMOSimulator.get_instance().get_graph()
     v_visits = get_visits_from_query(graph, starting_v, ending_v, visits)
-    path = get_optimal_path(graph, v_visits, Strategy.SHORTEST_PATH)
+    path = get_optimal_path(graph, v_visits, Strategy.TRAFFIC)
     return path
 
 @app.get('/AStarAvgSpeed')

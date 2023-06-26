@@ -10,11 +10,11 @@ const globals = {
     selectingStart: false,
     selectingEnd: false,
     selectingVisists: false,
-    defaultNodeColor: '#69b3a2',
+    defaultNodeColor: '#1B9C85',
     startNodeColor: '#2e6fd9',
     endNodeColor: '#dc3545',
     visitColor: '#ffc107',
-
+    currentPath: [],
 }
  
 // FUNCTIONS
@@ -178,6 +178,20 @@ const getAstarWaitingTime = async () => {
     colorPath(resPath);
 }
 
+const getAstarAvgSpeed = async () => {
+    if (!globals.startNodeId)
+    return;
+    if (!globals.endNodeId)
+        return;
+
+    let startV = globals.startNodeId.replace(globals.vertexPrefix, '');
+    let endV = globals.endNodeId.replace(globals.vertexPrefix, '');
+    let visits = globals.visitNodesId.map((el) => el.replace(globals.vertexPrefix, ''))
+    let url = `${globals.baseUrl}/AStarAvgSpeed?starting_v=${startV}&ending_v=${endV}&visits=${visits}`
+    let resPath = await getRequest(url)//.map((el) => {globals.vertexPrefix + el})
+    colorPath(resPath);
+}
+
 const startSimulation = async () => {
     let url = `${globals.baseUrl}/startSimulation`
     let resPath = await getRequest(url)//.map((el) => {globals.vertexPrefix + el})
@@ -188,16 +202,29 @@ const endSimulation = async () => {
     let resPath = await getRequest(url)//.map((el) => {globals.vertexPrefix + el})
 }
 
+const clearPath = () => {
+    globals.currentPath.forEach(element => {
+        let edgeEl = $('#' + globals.edgePrefix + element);
+        edgeEl.css({
+            'stroke': '',
+            'stroke-width': ''
+        });     
+           
+    });
+}
+
 const colorPath = (path) => {
+    clearPath();
     path.forEach(element => {
         let edgeEl = $('#' + globals.edgePrefix + element);
         edgeEl.css(
             {
                 'stroke': 'rgb(255, 0, 0)',
-                'stroke-width': '4'  
+                'stroke-width': '5'  
             }
         )
     });
+    globals.currentPath = path;
 }
 
 

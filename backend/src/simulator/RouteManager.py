@@ -75,7 +75,7 @@ class RouteManager:
                 # no content xml
                 self.create_new_file()
 
-    def generate_random_trips(self, steps=1000, period='0.2', fringe_factor=10) -> None:
+    def generate_random_trips(self, steps=1000, period='1.0', fringe_factor=1) -> None:
         self.create_new_file()
         try:
             output_path = self.base_path

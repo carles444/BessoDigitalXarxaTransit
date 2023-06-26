@@ -13,6 +13,8 @@ from src.simulator.RouteManager import RouteManager
 from src.optimizer.OptimizerSimulator import OptimizerSimulator
 import multiprocessing
 import time
+import json
+
 
 class Constraints:
     def __init__(self, max_edges_change : int = 3, max_nodes_change : int = 3):
@@ -85,7 +87,7 @@ class Optimizer:
             self._randomize_edge(mod_graph)
         return mod_graph
 
-    def create_optimized_scene(self, graph : Graph) -> None:
+    def create_optimized_scene(self, graph : Graph, copy_net : bool = False) -> None:
         dst_path = self.configuration_manager.get_component_value('optimizer_optimized_scene_path')
         if os.path.exists(dst_path):
             shutil.rmtree(dst_path)
@@ -96,6 +98,8 @@ class Optimizer:
         self.scene_manager.generate_cfg_file(dst_path)
         steps = self.configuration_manager.get_component_value('optimizer_simulation_steps')
         RouteManager(dst_path).generate_random_trips(steps=steps)
+        if copy_net:
+            shutil.copyfile(os.path.join(dst_path, 'optimized.net.xml'), os.path.join(self.scene_path, 'optimized.net.xml'))
 
     def _execute_simulation(self, simulator : OptimizerSimulator) -> dict:
         return simulator.simulate()
@@ -118,7 +122,7 @@ class Optimizer:
             
             # generate random trips
             steps = self.configuration_manager.get_component_value('optimizer_simulation_steps')
-            RouteManager(tmp_path).generate_random_trips(steps=steps, period='1.2')
+            RouteManager(tmp_path).generate_random_trips(steps=steps, period='1')
 
             return tmp_path
         except:
@@ -129,6 +133,7 @@ class Optimizer:
         max_epochs = self.configuration_manager.get_component_value('optimizer_epochs')
         n_threads = self.configuration_manager.get_component_value('optimizer_concurrent_threads')
         graph = self.scene_manager.get_graph()
+        best_stats = {}
         
         epoch = 0
         while epoch < max_epochs:
@@ -148,20 +153,22 @@ class Optimizer:
 
             simulators = [OptimizerSimulator(sim_path) for sim_path in simulation_folders]
 
-            try:  
-                pool = multiprocessing.Pool(processes=n_threads)
-                results = pool.map(self._execute_simulation, simulators)
-                pool.close()
-                pool.join()  
-                best_simulation = min(results, key=lambda x : x['total_waiting_time'])
-                graph = simulators[results.index(best_simulation)].get_graph()
-            except:
-                pass
+            pool = multiprocessing.Pool(processes=n_threads)
+            results = pool.map(self._execute_simulation, simulators)
+            pool.close()
+            pool.join()  
+            best_simulation_stats = min(results, key=lambda x : x['total_waiting_time'])
+            graph = simulators[results.index(best_simulation_stats)].get_graph()
             epoch += 1
             self.logger.info(f'EPCOH elapsed time: {time.time() - t_i}s')
 
-        self.create_optimized_scene(graph)
+            with open(os.path.join(self.scene_path, 'stats.json'), 'a') as file:
+                json.dump(best_simulation_stats, file, indent=3)
+
+
+        self.create_optimized_scene(graph, copy_net=True)
         shutil.rmtree(self.tmp_scenes_path)
+        return best_simulation_stats
 
         
 
