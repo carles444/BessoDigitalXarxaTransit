@@ -72,7 +72,7 @@ const mountGraph = (jsonGraph, onclickNode) => {
             .data(nodes)
             .enter()
             .append("text")
-            .text((d) => d.id)
+            //text((d) => d.id)
             .attr("font-size", 20)
             .attr("dx", -10)
             .attr("dy", 5)

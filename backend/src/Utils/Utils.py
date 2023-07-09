@@ -44,7 +44,7 @@ def parse_random_graphs(path_dir) -> list:
                 line = line.replace('\n', '')
                 if line[0] == 'V' and line != 'VERTICES':
                     args = line.split(' ')
-                    v = Vertex(args[0], (float(args[1])/15, float(args[2])/15))
+                    v = Vertex(args[0], (float(args[1])/12, float(args[2])/12))
                     graph.add_vertex(v)
                 elif line[0] == 'E' and line != 'EDGES':
                     args = line.split(' ')

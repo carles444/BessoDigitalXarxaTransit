@@ -69,9 +69,9 @@ def main() -> None:
     conf = ConfigurationManager.get_instance()
     default_path = conf.get_component_value('default_simulation_path')
     to_convert_path = 'C:/Users/carle/Desktop/graphs'
-    
-    #optimizer.optimize_escene()
-    #exit(0)
+    optimizer = Optimizer(default_path)
+    optimizer.optimize_escene()
+    exit(0)
     ds_gen = SUMOSimulator.get_instance()
     # ds_gen.simulate(use_gui=False)
     graph = ds_gen.get_graph()

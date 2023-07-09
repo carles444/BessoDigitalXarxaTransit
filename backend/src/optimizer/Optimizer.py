@@ -78,11 +78,11 @@ class Optimizer:
 
     def apply_random_modifications(self, graph : Graph) -> Graph:
         mod_graph = copy.deepcopy(graph)
-        n_changes = random.randint(1, self.constraints.max_nodes_change)
+        n_changes = random.randint(0, self.constraints.max_nodes_change)
         for _ in range(n_changes):
             self._randomize_vertex(mod_graph)
 
-        n_changes = random.randint(1, self.constraints.max_edges_change)
+        n_changes = random.randint(0, self.constraints.max_edges_change)
         for _ in range(n_changes):
             self._randomize_edge(mod_graph)
         return mod_graph

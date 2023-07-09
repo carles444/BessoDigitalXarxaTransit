@@ -1,12 +1,67 @@
 {
-  "co2_emission": 30113833.20145574,
-  "nox_emission": 12545.748554942887,
-  "pmx_emission": 576.8697120530948,
-  "fuel_comsumption": 108102.07305920553,
-  "total_waiting_time": 11975.0,
-  "total_speed": 1199.936708370596,
-  "avg_speed": 8.0475022856761,
-  "avg_route_end_time": 62.3125,
-  "total_routes_time": 1994,
-  "ended_routes": 32
+  "co2_emission": 64965847.70204395,
+  "nox_emission": 27056.287293460777,
+  "pmx_emission": 1250.4916686800868,
+  "fuel_comsumption": 171159.8997476846,
+  "total_waiting_time": 90137.0,
+  "total_speed": 1617.4554162519366,
+  "avg_speed": 8.117956029215458,
+  "avg_route_end_time": 82.85,
+  "total_routes_time": 4971,
+  "ended_routes": 60
+}{
+   "co2_emission": 54321331.22621645,
+   "nox_emission": 22527.882729661196,
+   "pmx_emission": 1030.5614485412761,
+   "fuel_comsumption": 142457.2785622168,
+   "total_waiting_time": 19570.0,
+   "total_speed": 1662.184832655591,
+   "avg_speed": 8.351421372346966,
+   "avg_route_end_time": 86.3061224489796,
+   "total_routes_time": 4229,
+   "ended_routes": 49
+}{
+   "co2_emission": 53847882.62585396,
+   "nox_emission": 22399.297269898438,
+   "pmx_emission": 1030.84362686588,
+   "fuel_comsumption": 148846.33708755535,
+   "total_waiting_time": 18405.0,
+   "total_speed": 1660.6265114393932,
+   "avg_speed": 8.3367816193726,
+   "avg_route_end_time": 82.75510204081633,
+   "total_routes_time": 4055,
+   "ended_routes": 49
+}{
+   "co2_emission": 53436993.66298939,
+   "nox_emission": 22032.159438685747,
+   "pmx_emission": 997.5219431153633,
+   "fuel_comsumption": 145775.99067933433,
+   "total_waiting_time": 16035.0,
+   "total_speed": 1759.2035116680925,
+   "avg_speed": 8.833083370248126,
+   "avg_route_end_time": 89.22448979591837,
+   "total_routes_time": 4372,
+   "ended_routes": 49
+}{
+   "co2_emission": 52386491.04202772,
+   "nox_emission": 21616.147173439,
+   "pmx_emission": 979.6735424528383,
+   "fuel_comsumption": 151971.26738437527,
+   "total_waiting_time": 11082.0,
+   "total_speed": 1729.9665707719637,
+   "avg_speed": 8.691024940162523,
+   "avg_route_end_time": 84.82692307692308,
+   "total_routes_time": 4411,
+   "ended_routes": 52
+}{
+   "co2_emission": 52386491.04202772,
+   "nox_emission": 21616.147173439,
+   "pmx_emission": 979.6735424528383,
+   "fuel_comsumption": 151971.26738437527,
+   "total_waiting_time": 11082.0,
+   "total_speed": 1729.9665707719637,
+   "avg_speed": 8.691024940162523,
+   "avg_route_end_time": 84.82692307692308,
+   "total_routes_time": 4411,
+   "ended_routes": 52
 }
